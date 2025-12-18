@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Prompt Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+        .card-gradient { background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%); }
+        .btn-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .btn-gradient:hover { background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); }
+        .option-btn.selected { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-color: #667eea; }
+        .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+        .scrollbar-thin::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
+        .glow { box-shadow: 0 0 30px rgba(102, 126, 234, 0.3); }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+                🎨 AI Image Prompt Generator
+            </h1>
+            <p class="text-gray-400 text-lg">Create perfect prompts for AI image generation & photography</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="grid lg:grid-cols-3 gap-6">
+            <!-- Left Column - Options -->
+            <div class="lg:col-span-2 space-y-4 max-h-[75vh] overflow-y-auto scrollbar-thin pr-2">
+                
+                <!-- Subject -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">👤 Subject</h3>
+                    <input type="text" id="subject" placeholder="e.g., A young woman with curly red hair, a majestic lion, futuristic cityscape..." 
+                        class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 placeholder-gray-500">
+                </div>
+
+                <!-- Image Type -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">📷 Image Type</h3>
+                    <div class="flex flex-wrap gap-2" id="imageType">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Portrait">Portrait</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Landscape">Landscape</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Product Shot">Product Shot</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Fashion">Fashion</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Street Photography">Street Photography</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Wildlife">Wildlife</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Architecture">Architecture</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Food Photography">Food Photography</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Abstract">Abstract</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Macro">Macro</button>
+                    </div>
+                </div>
+
+                <!-- Shot Type / Framing -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">🎬 Shot Type / Framing</h3>
+                    <div class="flex flex-wrap gap-2" id="shotType">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Extreme Close-up">Extreme Close-up</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Close-up">Close-up</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Medium Close-up">Medium Close-up</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Medium Shot">Medium Shot</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Cowboy Shot">Cowboy Shot</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Full Body Shot">Full Body Shot</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Wide Shot">Wide Shot</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Extreme Wide Shot">Extreme Wide Shot</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Establishing Shot">Establishing Shot</button>
+                    </div>
+                </div>
+
+                <!-- Camera Angle -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">📐 Camera Angle</h3>
+                    <div class="flex flex-wrap gap-2" id="cameraAngle">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Eye Level">Eye Level</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="High Angle">High Angle</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Low Angle">Low Angle</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Bird's Eye View">Bird's Eye View</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Worm's Eye View">Worm's Eye View</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Dutch Angle">Dutch Angle</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Over the Shoulder">Over the Shoulder</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="POV">POV</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Drone Shot">Drone Shot</button>
+                    </div>
+                </div>
+
+                <!-- View / Perspective -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">👁️ View / Perspective</h3>
+                    <div class="flex flex-wrap gap-2" id="view">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Front View">Front View</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Side View">Side View</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Back View">Back View</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="3/4 View">3/4 View</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Profile View">Profile View</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Top Down">Top Down</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Isometric">Isometric</button>
+                    </div>
+                </div>
+
+                <!-- Subject Position -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">🎯 Subject Position</h3>
+                    <div class="flex flex-wrap gap-2" id="subjectPosition">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Centered">Centered</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Left Third">Left Third</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Right Third">Right Third</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Upper Third">Upper Third</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Lower Third">Lower Third</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Golden Ratio">Golden Ratio</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Leading Lines">Leading Lines</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Symmetrical">Symmetrical</button>
+                    </div>
+                </div>
+
+                <!-- Composition Rules -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">📏 Composition Rules</h3>
+                    <div class="flex flex-wrap gap-2" id="composition">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Rule of Thirds">Rule of Thirds</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Golden Ratio">Golden Ratio</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Fibonacci Spiral">Fibonacci Spiral</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Symmetry">Symmetry</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Frame within Frame">Frame within Frame</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Negative Space">Negative Space</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Triangular Composition">Triangular Composition</button>
+                    </div>
+                </div>
+
+                <!-- Lighting -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">💡 Lighting</h3>
+                    <div class="flex flex-wrap gap-2" id="lighting">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Natural Light">Natural Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Golden Hour">Golden Hour</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Blue Hour">Blue Hour</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Soft Light">Soft Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Hard Light">Hard Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Rembrandt Lighting">Rembrandt Lighting</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Split Lighting">Split Lighting</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Backlit">Backlit</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Silhouette">Silhouette</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Studio Lighting">Studio Lighting</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Neon Lighting">Neon Lighting</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Candlelight">Candlelight</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Dramatic Shadows">Dramatic Shadows</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Volumetric Lighting">Volumetric Lighting</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Butterfly Lighting">Butterfly Lighting</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Loop Lighting">Loop Lighting</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Broad Lighting">Broad Lighting</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Short Lighting">Short Lighting</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Clamshell Lighting">Clamshell Lighting</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="High Key Lighting">High Key Lighting</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Low Key Lighting">Low Key Lighting</button>
+                    </div>
+                </div>
+
+                <!-- Rim Lighting Options -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">✨ Rim Lighting Options</h3>
+                    <div class="flex flex-wrap gap-2" id="rimLighting">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Rim Light">Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Hair Light">Hair Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Edge Lighting">Edge Lighting</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Kicker Light">Kicker Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Accent Light">Accent Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Separation Light">Separation Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Golden Rim Light">Golden Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Blue Rim Light">Blue Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Red Rim Light">Red Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Cyan Rim Light">Cyan Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Purple Rim Light">Purple Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Orange Rim Light">Orange Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="White Rim Light">White Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Warm Rim Light">Warm Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Cool Rim Light">Cool Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Neon Rim Light">Neon Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Subtle Rim Light">Subtle Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Strong Rim Light">Strong Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Double Rim Light">Double Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Dual Color Rim Light">Dual Color Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Halo Rim Light">Halo Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Backlight with Rim">Backlight with Rim</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Silhouette Rim Light">Silhouette Rim Light</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Glowing Edges">Glowing Edges</button>
+                    </div>
+                </div>
+
+                <!-- Mood / Atmosphere -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">🎭 Mood / Atmosphere</h3>
+                    <div class="flex flex-wrap gap-2" id="mood">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Dreamy">Dreamy</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Mysterious">Mysterious</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Romantic">Romantic</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Dramatic">Dramatic</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Serene">Serene</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Melancholic">Melancholic</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Energetic">Energetic</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Ethereal">Ethereal</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Dark & Moody">Dark & Moody</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Nostalgic">Nostalgic</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Whimsical">Whimsical</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Epic">Epic</button>
+                    </div>
+                </div>
+
+                <!-- Style -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">🎨 Style</h3>
+                    <div class="flex flex-wrap gap-2" id="style">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Photorealistic">Photorealistic</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Cinematic">Cinematic</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Editorial">Editorial</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Fine Art">Fine Art</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Documentary">Documentary</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Vintage">Vintage</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Film Noir">Film Noir</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Minimalist">Minimalist</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Surrealist">Surrealist</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Fantasy">Fantasy</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Sci-Fi">Sci-Fi</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Anime">Anime</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Hyperrealistic">Hyperrealistic</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Oil Painting">Oil Painting</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Watercolor">Watercolor</button>
+                    </div>
+                </div>
+
+                <!-- Outfits (for portraits) -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">👗 Outfits / Attire</h3>
+                    <div class="flex flex-wrap gap-2" id="outfit">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Casual Wear">Casual Wear</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Formal Attire">Formal Attire</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Evening Gown">Evening Gown</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Business Suit">Business Suit</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Streetwear">Streetwear</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Bohemian">Bohemian</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Victorian">Victorian</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Cyberpunk">Cyberpunk</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Fantasy Armor">Fantasy Armor</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Traditional/Cultural">Traditional/Cultural</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Athletic Wear">Athletic Wear</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Haute Couture">Haute Couture</button>
+                    </div>
+                </div>
+
+                <!-- Women's Hairstyles -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">💇‍♀️ Women's Hairstyles</h3>
+                    <div class="flex flex-wrap gap-2" id="womenHair">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Long Flowing Hair">Long Flowing Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Long Wavy Hair">Long Wavy Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Long Straight Hair">Long Straight Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Curly Hair">Curly Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Tight Curls">Tight Curls</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Beach Waves">Beach Waves</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Pixie Cut">Pixie Cut</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Bob Cut">Bob Cut</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Lob (Long Bob)">Lob (Long Bob)</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Bangs/Fringe">Bangs/Fringe</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Side-Swept Bangs">Side-Swept Bangs</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Curtain Bangs">Curtain Bangs</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Ponytail">Ponytail</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="High Ponytail">High Ponytail</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Messy Bun">Messy Bun</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Elegant Updo">Elegant Updo</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="French Twist">French Twist</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Braided Hair">Braided Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="French Braid">French Braid</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Fishtail Braid">Fishtail Braid</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Box Braids">Box Braids</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Cornrows">Cornrows</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Dreadlocks">Dreadlocks</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Afro">Afro</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Natural Coils">Natural Coils</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Space Buns">Space Buns</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Half-Up Half-Down">Half-Up Half-Down</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Side Part">Side Part</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Middle Part">Middle Part</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Windswept Hair">Windswept Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Wet Look Hair">Wet Look Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Vintage Hollywood Waves">Vintage Hollywood Waves</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Shaved Sides">Shaved Sides</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Ombre Hair">Ombre Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Balayage">Balayage</button>
+                    </div>
+                </div>
+
+                <!-- Men's Hairstyles -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">💇‍♂️ Men's Hairstyles</h3>
+                    <div class="flex flex-wrap gap-2" id="menHair">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Short Cropped Hair">Short Cropped Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Buzz Cut">Buzz Cut</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Crew Cut">Crew Cut</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Fade Haircut">Fade Haircut</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="High Fade">High Fade</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Low Fade">Low Fade</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Taper Fade">Taper Fade</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Undercut">Undercut</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Pompadour">Pompadour</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Quiff">Quiff</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Slicked Back">Slicked Back</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Side Part">Side Part</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Comb Over">Comb Over</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Textured Crop">Textured Crop</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="French Crop">French Crop</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Caesar Cut">Caesar Cut</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Spiky Hair">Spiky Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Messy/Tousled">Messy/Tousled</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Man Bun">Man Bun</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Long Hair">Long Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Shoulder Length">Shoulder Length</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Wavy Hair">Wavy Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Curly Hair">Curly Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Afro">Afro</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Dreadlocks">Dreadlocks</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Braids">Braids</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Mohawk">Mohawk</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Faux Hawk">Faux Hawk</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Bald/Shaved Head">Bald/Shaved Head</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Stubble with Short Hair">Stubble with Short Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Full Beard">Full Beard</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Goatee">Goatee</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Mustache">Mustache</button>
+                    </div>
+                </div>
+
+                <!-- Hair Colors -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">🎨 Hair Colors</h3>
+                    <div class="flex flex-wrap gap-2" id="hairColor">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Black Hair">Black Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Dark Brown Hair">Dark Brown Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Light Brown Hair">Light Brown Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Chestnut Hair">Chestnut Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Auburn Hair">Auburn Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Red Hair">Red Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Ginger Hair">Ginger Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Strawberry Blonde">Strawberry Blonde</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Blonde Hair">Blonde Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Platinum Blonde">Platinum Blonde</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Golden Blonde">Golden Blonde</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Dirty Blonde">Dirty Blonde</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Silver/Gray Hair">Silver/Gray Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="White Hair">White Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Blue Hair">Blue Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Purple Hair">Purple Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Pink Hair">Pink Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Green Hair">Green Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Rainbow Hair">Rainbow Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Two-Tone Hair">Two-Tone Hair</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Highlights">Highlights</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Lowlights">Lowlights</button>
+                    </div>
+                </div>
+
+                <!-- Background / Setting -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">🏞️ Background / Setting</h3>
+                    <div class="flex flex-wrap gap-2" id="background">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Studio Backdrop">Studio Backdrop</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Urban Street">Urban Street</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Nature Forest">Nature Forest</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Beach">Beach</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Mountain">Mountain</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Desert">Desert</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Indoor Home">Indoor Home</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Office">Office</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Cafe">Cafe</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Garden">Garden</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Futuristic City">Futuristic City</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Space">Space</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Bokeh Background">Bokeh Background</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Abstract Background">Abstract Background</button>
+                    </div>
+                </div>
+
+                <!-- Time of Day -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">🌅 Time of Day</h3>
+                    <div class="flex flex-wrap gap-2" id="timeOfDay">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Dawn">Dawn</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Morning">Morning</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Midday">Midday</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Afternoon">Afternoon</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Golden Hour">Golden Hour</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Sunset">Sunset</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Dusk">Dusk</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Night">Night</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Midnight">Midnight</button>
+                    </div>
+                </div>
+
+                <!-- Weather -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">🌤️ Weather</h3>
+                    <div class="flex flex-wrap gap-2" id="weather">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Sunny">Sunny</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Cloudy">Cloudy</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Overcast">Overcast</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Rainy">Rainy</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Snowy">Snowy</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Foggy">Foggy</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Misty">Misty</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Stormy">Stormy</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Windy">Windy</button>
+                    </div>
+                </div>
+
+                <!-- Camera & Lens -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">📸 Camera & Lens</h3>
+                    <div class="flex flex-wrap gap-2" id="camera">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Canon EOS R5">Canon EOS R5</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Sony A7R IV">Sony A7R IV</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Nikon Z9">Nikon Z9</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Hasselblad">Hasselblad</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="35mm Lens">35mm Lens</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="50mm Lens">50mm Lens</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="85mm Portrait Lens">85mm Portrait Lens</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Wide Angle 24mm">Wide Angle 24mm</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Telephoto 200mm">Telephoto 200mm</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Macro Lens">Macro Lens</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Fisheye Lens">Fisheye Lens</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Tilt-Shift Lens">Tilt-Shift Lens</button>
+                    </div>
+                </div>
+
+                <!-- Depth of Field -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">🔍 Depth of Field</h3>
+                    <div class="flex flex-wrap gap-2" id="dof">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Shallow DOF f/1.4">Shallow DOF f/1.4</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Shallow DOF f/2.8">Shallow DOF f/2.8</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Medium DOF f/5.6">Medium DOF f/5.6</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Deep DOF f/11">Deep DOF f/11</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Everything in Focus f/16">Everything in Focus f/16</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Bokeh Effect">Bokeh Effect</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Tack Sharp">Tack Sharp</button>
+                    </div>
+                </div>
+
+                <!-- Color Grading -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">🎨 Color Grading</h3>
+                    <div class="flex flex-wrap gap-2" id="colorGrading">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Vibrant Colors">Vibrant Colors</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Muted Tones">Muted Tones</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Black and White">Black and White</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Sepia">Sepia</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Warm Tones">Warm Tones</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Cool Tones">Cool Tones</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Teal and Orange">Teal and Orange</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Pastel">Pastel</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="High Contrast">High Contrast</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Low Contrast">Low Contrast</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Cross Processed">Cross Processed</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Film Emulation">Film Emulation</button>
+                    </div>
+                </div>
+
+                <!-- Quality Modifiers -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">⭐ Quality Modifiers</h3>
+                    <div class="flex flex-wrap gap-2" id="quality">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="8K Resolution">8K Resolution</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Ultra HD">Ultra HD</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Highly Detailed">Highly Detailed</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Sharp Focus">Sharp Focus</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Professional Photography">Professional Photography</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Award Winning">Award Winning</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Magazine Cover">Magazine Cover</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="RAW Photo">RAW Photo</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Masterpiece">Masterpiece</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="Intricate Details">Intricate Details</button>
+                    </div>
+                </div>
+
+                <!-- Aspect Ratio -->
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">📐 Aspect Ratio</h3>
+                    <div class="flex flex-wrap gap-2" id="aspectRatio">
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="1:1 Square">1:1 Square</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="4:3">4:3</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="3:2">3:2</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="16:9 Widescreen">16:9 Widescreen</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="21:9 Ultrawide">21:9 Ultrawide</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="9:16 Vertical">9:16 Vertical</button>
+                        <button class="option-btn px-4 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition" data-value="2:3 Portrait">2:3 Portrait</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column - Generated Prompt -->
+            <div class="lg:col-span-1">
+                <div class="card-gradient backdrop-blur-sm rounded-xl p-5 border border-white/10 sticky top-4 glow">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">✨ Generated Prompt</h3>
+                    
+                    <div id="promptOutput" class="bg-black/30 rounded-lg p-4 min-h-[200px] mb-4 text-gray-300 whitespace-pre-wrap break-words">
+                        <span class="text-gray-500 italic">Your prompt will appear here...</span>
+                    </div>
+
+                    <div class="flex gap-2 mb-4">
+                        <button onclick="copyPrompt()" class="flex-1 btn-gradient text-white font-semibold py-3 px-4 rounded-lg transition transform hover:scale-105 flex items-center justify-center gap-2">
+                            <span>📋</span> Copy Prompt
+                        </button>
+                    </div>
+
+                    <div class="flex gap-2 mb-4">
+                        <button onclick="randomizeAll()" class="flex-1 bg-purple-600/50 hover:bg-purple-600/70 text-white font-semibold py-3 px-4 rounded-lg transition flex items-center justify-center gap-2">
+                            <span>🎲</span> Random
+                        </button>
+                        <button onclick="clearAll()" class="flex-1 bg-red-600/50 hover:bg-red-600/70 text-white font-semibold py-3 px-4 rounded-lg transition flex items-center justify-center gap-2">
+                            <span>🗑️</span> Clear All
+                        </button>
+                    </div>
+
+                    <!-- Selected Tags Preview -->
+                    <div class="border-t border-white/10 pt-4">
+                        <h4 class="text-sm font-medium text-gray-400 mb-2">Selected Elements:</h4>
+                        <div id="selectedTags" class="flex flex-wrap gap-2 min-h-[50px]">
+                            <span class="text-gray-500 text-sm italic">No elements selected</span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Tips -->
+                    <div class="border-t border-white/10 pt-4 mt-4">
+                        <h4 class="text-sm font-medium text-gray-400 mb-2">💡 Quick Tips:</h4>
+                        <ul class="text-xs text-gray-500 space-y-1">
+                            <li>• Click options to select/deselect</li>
+                            <li>• Add a detailed subject description</li>
+                            <li>• Combine multiple elements for best results</li>
+                            <li>• Use quality modifiers for better output</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center mt-10 text-gray-500 text-sm">
+            <p>Made for AI Image Generation • Midjourney, DALL-E, Stable Diffusion & more</p>
+        </footer>
+    </div>
+
+    <script>
+        // Store selections
+        const selections = {
+            subject: '',
+            imageType: [],
+            shotType: [],
+            cameraAngle: [],
+            view: [],
+            subjectPosition: [],
+            composition: [],
+            lighting: [],
+            rimLighting: [],
+            mood: [],
+            style: [],
+            outfit: [],
+            womenHair: [],
+            menHair: [],
+            hairColor: [],
+            background: [],
+            timeOfDay: [],
+            weather: [],
+            camera: [],
+            dof: [],
+            colorGrading: [],
+            quality: [],
+            aspectRatio: []
+        };
+
+        // Initialize event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Subject input
+            document.getElementById('subject').addEventListener('input', (e) => {
+                selections.subject = e.target.value;
+                generatePrompt();
+            });
+
+            // Option buttons
+            const categories = ['imageType', 'shotType', 'cameraAngle', 'view', 'subjectPosition', 
+                              'composition', 'lighting', 'rimLighting', 'mood', 'style', 'outfit', 
+                              'womenHair', 'menHair', 'hairColor', 'background',
+                              'timeOfDay', 'weather', 'camera', 'dof', 'colorGrading', 'quality', 'aspectRatio'];
+
+            categories.forEach(category => {
+                const container = document.getElementById(category);
+                if (container) {
+                    container.querySelectorAll('.option-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const value = btn.dataset.value;
+                            const index = selections[category].indexOf(value);
+                            
+                            if (index > -1) {
+                                selections[category].splice(index, 1);
+                                btn.classList.remove('selected');
+                            } else {
+                                selections[category].push(value);
+                                btn.classList.add('selected');
+                            }
+                            
+                            generatePrompt();
+                        });
+                    });
+                }
+            });
+        });
+
+        function generatePrompt() {
+            const parts = [];
+
+            // Subject first
+            if (selections.subject) {
+                parts.push(selections.subject);
+            }
+
+            // Add all other selections
+            const order = ['imageType', 'shotType', 'cameraAngle', 'view', 'outfit', 
+                          'womenHair', 'menHair', 'hairColor', 'subjectPosition', 
+                          'composition', 'background', 'timeOfDay', 'weather', 'lighting', 'rimLighting', 'mood', 
+                          'style', 'camera', 'dof', 'colorGrading', 'quality', 'aspectRatio'];
+
+            order.forEach(category => {
+                if (selections[category].length > 0) {
+                    parts.push(selections[category].join(', '));
+                }
+            });
+
+            const prompt = parts.join(', ');
+            const outputEl = document.getElementById('promptOutput');
+            
+            if (prompt) {
+                outputEl.innerHTML = prompt;
+            } else {
+                outputEl.innerHTML = '<span class="text-gray-500 italic">Your prompt will appear here...</span>';
+            }
+
+            updateSelectedTags();
+        }
+
+        function updateSelectedTags() {
+            const tagsContainer = document.getElementById('selectedTags');
+            const allTags = [];
+
+            Object.keys(selections).forEach(key => {
+                if (key === 'subject' && selections.subject) {
+                    allTags.push({ category: 'subject', value: 'Subject: ' + selections.subject.substring(0, 20) + (selections.subject.length > 20 ? '...' : '') });
+                } else if (Array.isArray(selections[key])) {
+                    selections[key].forEach(val => {
+                        allTags.push({ category: key, value: val });
+                    });
+                }
+            });
+
+            if (allTags.length === 0) {
+                tagsContainer.innerHTML = '<span class="text-gray-500 text-sm italic">No elements selected</span>';
+            } else {
+                tagsContainer.innerHTML = allTags.map(tag => 
+                    `<span class="bg-purple-600/30 text-purple-300 px-2 py-1 rounded text-xs">${tag.value}</span>`
+                ).join('');
+            }
+        }
+
+        function copyPrompt() {
+            const promptText = document.getElementById('promptOutput').innerText;
+            if (promptText && !promptText.includes('Your prompt will appear here')) {
+                navigator.clipboard.writeText(promptText).then(() => {
+                    // Show feedback
+                    const btn = event.target.closest('button');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<span>✅</span> Copied!';
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                    }, 2000);
+                });
+            }
+        }
+
+        function clearAll() {
+            // Clear subject
+            document.getElementById('subject').value = '';
+            selections.subject = '';
+
+            // Clear all selections
+            Object.keys(selections).forEach(key => {
+                if (Array.isArray(selections[key])) {
+                    selections[key] = [];
+                }
+            });
+
+            // Remove selected class from all buttons
+            document.querySelectorAll('.option-btn.selected').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            generatePrompt();
+        }
+
+        function randomizeAll() {
+            clearAll();
+
+            // Random subject examples
+            const subjects = [
+                'A beautiful woman with flowing golden hair',
+                'A mysterious warrior in ancient armor',
+                'A futuristic robot with glowing blue eyes',
+                'A majestic eagle soaring through the sky',
+                'An enchanted forest with magical creatures',
+                'A vintage car on an empty highway',
+                'A steampunk inventor in their workshop',
+                'A serene Japanese garden with cherry blossoms'
+            ];
+            
+            document.getElementById('subject').value = subjects[Math.floor(Math.random() * subjects.length)];
+            selections.subject = document.getElementById('subject').value;
+
+            // Randomly select from each category
+            const categories = ['imageType', 'shotType', 'cameraAngle', 'view', 'lighting', 'rimLighting', 'mood', 'style', 'quality'];
+            
+            categories.forEach(category => {
+                const container = document.getElementById(category);
+                if (container) {
+                    const buttons = container.querySelectorAll('.option-btn');
+                    const randomBtn = buttons[Math.floor(Math.random() * buttons.length)];
+                    randomBtn.click();
+                }
+            }); 
+
+            generatePrompt();
+        }
+    </script>
+</body>
+</html>
